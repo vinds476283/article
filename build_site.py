@@ -162,6 +162,13 @@ def sidebar(html):
     return '<aside class="side" id="sidebar">\n' + html + '\n\t</aside>'
 
 
+def local_site(data, root):
+    """把站点数据里的 home 换成本站主页的相对地址(而不是 https://y.vinds.top)"""
+    out = dict(data)
+    out["home"] = root + "index.html"
+    return out
+
+
 # ----------------------------------------------------------------- 收集文章
 def walk_dir(path):
     """递归收集目录下的 md 文件, 返回 (文件列表, 子目录列表)"""
@@ -357,16 +364,17 @@ def main():
         root="", title=SITE_TITLE,
         desc="铟子vinds 的文章", body_class="page-home", page="home",
         extra_data={}, extra_head="", content_html=home_content,
-        sidebar_html="", inject_data=site_data,
+        sidebar_html="", inject_data=local_site(site_data, ""),
     ))
 
     # ------------------------------------------------------- 每个专题 index
     for sub in subjects:
         sub_index = os.path.join(ARTICLE_DIR, sub["dir"], "index.html").replace("\\", "/")
         root = "../" * sub_index.count("/")
+        chrome = local_site(site_data, root)
         context = {
             "title": SITE_TITLE, "author": SITE_AUTHOR,
-            "home": SITE_HOME, "repo": SITE_REPO,
+            "home": root + "index.html", "repo": SITE_REPO,
             "subjects": site_data["subjects"],
             "subject": {"name": sub["name"], "dir": sub["dir"],
                         "doc": sub["doc"], "home": sub["home"]},
@@ -408,7 +416,7 @@ def main():
                 root = "../" * depth
                 context = {
                     "title": SITE_TITLE, "author": SITE_AUTHOR,
-                    "home": SITE_HOME, "repo": SITE_REPO,
+                    "home": root + "index.html", "repo": SITE_REPO,
                     "subjects": site_data["subjects"],
                     "subject": {"name": sub["name"], "dir": sub["dir"],
                                 "doc": sub["doc"], "home": sub["home"]},
@@ -455,7 +463,7 @@ def main():
         content_html=('<div class="home"><h1>404</h1>'
                       '<p class="lead">没有找到这个页面, '
                       '<a href="/">回到主页</a>。</p></div>'),
-        sidebar_html="", inject_data=site_data,
+        sidebar_html="", inject_data=local_site(site_data, "/"),
     ))
 
     print("完成: {} 个专题, {} 篇文章".format(
