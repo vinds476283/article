@@ -239,6 +239,10 @@ function initSidebar() {
 
 	var a = doc.getElementById('sidebar-subject');
 	if (a && PAGE.subject && PAGE.subject.home) a.href = root + encPath(PAGE.subject.home);
+
+	/* 侧栏的"主页"链接: PAGE.home 已经是相对本站主页的地址 */
+	var homeLink = doc.getElementById('sidebar-home');
+	if (homeLink && PAGE.home) homeLink.href = PAGE.home;
 }
 
 /* ------------------------------------------------------ Markdown 渲染器 */

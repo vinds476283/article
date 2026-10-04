@@ -384,12 +384,12 @@ def main():
         }
         side = sidebar(
             '<h2><a id="sidebar-subject" href="{h}">{n}</a></h2>\n'
-            '\t\t<p class="side-home"><a href="{home}">主页</a></p>\n'
+            '\t\t<p class="side-home"><a id="sidebar-home" href="{home}">主页</a></p>\n'
             '\t\t<input type="search" id="sidebar-search" placeholder="搜索文章…" '
             'aria-label="搜索文章">\n'
             '\t\t<div id="sidebar-tree"></div>'.format(
                 h=esc(href(root, sub["home"])), n=esc(sub["name"]),
-                home=SITE_HOME)
+                home=root + "index.html")
         )
         content = (
             '<article class="doc" id="content">\n'
@@ -426,12 +426,12 @@ def main():
                 }
                 side = sidebar(
                     '<h2><a id="sidebar-subject" href="{h}">{n}</a></h2>\n'
-                    '\t\t<p class="side-home"><a href="{home}">主页</a></p>\n'
+                    '\t\t<p class="side-home"><a id="sidebar-home" href="{home}">主页</a></p>\n'
                     '\t\t<input type="search" id="sidebar-search" placeholder="搜索文章…" '
                     'aria-label="搜索文章">\n'
                     '\t\t<div id="sidebar-tree"></div>'.format(
                         h=esc(href(root, sub["home"])), n=esc(sub["name"]),
-                        home=SITE_HOME)
+                        home=root + "index.html")
                 )
                 content = (
                     '<article class="doc" id="content">\n'
