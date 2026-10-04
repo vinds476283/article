@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-root="../../../" data-home="../../../index.html">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>vinds | (3)° 柯西不等式 (C-S不等式)</title>
+	<meta name="description" content="(3)° 柯西不等式 (C-S不等式) — 高中数学笔记">
+	<link rel="icon" href="../../../favicon.ico">
+	<link rel="apple-touch-icon" href="../../../favicon.ico">
+	<link rel="stylesheet" href="../../../style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+	<script>(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>	<script src="../../../site-data.js" defer></script>
+	<script src="../../../app.js"></script>	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+	<script defer>window.PAGE = {"title": "vinds", "author": "铟子vinds", "home": "https://y.vinds.top", "repo": "https://github.com/vinds476283/article", "subjects": [{"name": "高中数学笔记", "dir": "高中数学笔记", "doc": "", "home": "article/高中数学笔记/index.html", "folder": {"name": "高中数学笔记", "groups": [{"name": "0. 前言与后序", "groups": [], "items": [{"title": "(1) 前言", "url": "article/高中数学笔记/0. 前言与后序/(1) 前言.html"}, {"title": "(2) 习题答案", "url": "article/高中数学笔记/0. 前言与后序/(2) 习题答案.html"}, {"title": "(3) 名词索引", "url": "article/高中数学笔记/0. 前言与后序/(3) 名词索引.html"}]}, {"name": "1. 分析", "groups": [], "items": [{"title": "(1) 泰勒展开 & 麦克劳林公式 & 拉格朗日余项定理", "url": "article/高中数学笔记/1. 分析/(1) 泰勒展开 & 麦克劳林公式 & 拉格朗日余项定理.html"}, {"title": "(2) 估值 & 放缩", "url": "article/高中数学笔记/1. 分析/(2) 估值 & 放缩.html"}, {"title": "(3)° 求极限", "url": "article/高中数学笔记/1. 分析/(3)° 求极限.html"}, {"title": "(4) ε-N 极限求法", "url": "article/高中数学笔记/1. 分析/(4) ε-N 极限求法.html"}, {"title": "(5) 线性放缩", "url": "article/高中数学笔记/1. 分析/(5) 线性放缩.html"}, {"title": "(6) 介值定理 & 中值定理", "url": "article/高中数学笔记/1. 分析/(6) 介值定理 & 中值定理.html"}]}, {"name": "2.1. 代数 - 不等式", "groups": [], "items": [{"title": "(1) 基本不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(1) 基本不等式.html"}, {"title": "(2)° 均值不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(2)° 均值不等式.html"}, {"title": "(3)° 柯西不等式 (C-S不等式)", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(3)° 柯西不等式 (C-S不等式).html"}, {"title": "(4)° 琴生 (Jensen) 不等式 & 切线不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(4)° 琴生 (Jensen) 不等式 & 切线不等式.html"}, {"title": "(5)° 三元不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(5)° 三元不等式.html"}, {"title": "(6)° 不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(6)° 不等式.html"}]}, {"name": "2.2. 代数 - 数列", "groups": [], "items": [{"title": "(1) 数列", "url": "article/高中数学笔记/2.2. 代数 - 数列/(1) 数列.html"}, {"title": "(2)° 斐波那契数列", "url": "article/高中数学笔记/2.2. 代数 - 数列/(2)° 斐波那契数列.html"}, {"title": "(3) Gosper 算法", "url": "article/高中数学笔记/2.2. 代数 - 数列/(3) Gosper 算法.html"}]}, {"name": "3. 其他", "groups": [], "items": [{"title": "(1)° 集合论", "url": "article/高中数学笔记/3. 其他/(1)° 集合论.html"}, {"title": "(2)° 更多的三角函数 & 双曲三角函数 & 反三角函数 & 双曲三角函数", "url": "article/高中数学笔记/3. 其他/(2)° 更多的三角函数 & 双曲三角函数 & 反三角函数 & 双曲三角函数.html"}, {"title": "(3) 多项式定理", "url": "article/高中数学笔记/3. 其他/(3) 多项式定理.html"}]}], "items": [], "images": ["article/高中数学笔记/图片/三角形三边换元几何意义.png", "article/高中数学笔记/图片/极限的定义.jpg"]}}], "subject": {"name": "高中数学笔记", "dir": "高中数学笔记", "doc": "", "home": "article/高中数学笔记/index.html"}, "currentSubject": "高中数学笔记", "currentFolder": {"name": "高中数学笔记", "groups": [{"name": "0. 前言与后序", "groups": [], "items": [{"title": "(1) 前言", "url": "article/高中数学笔记/0. 前言与后序/(1) 前言.html"}, {"title": "(2) 习题答案", "url": "article/高中数学笔记/0. 前言与后序/(2) 习题答案.html"}, {"title": "(3) 名词索引", "url": "article/高中数学笔记/0. 前言与后序/(3) 名词索引.html"}]}, {"name": "1. 分析", "groups": [], "items": [{"title": "(1) 泰勒展开 & 麦克劳林公式 & 拉格朗日余项定理", "url": "article/高中数学笔记/1. 分析/(1) 泰勒展开 & 麦克劳林公式 & 拉格朗日余项定理.html"}, {"title": "(2) 估值 & 放缩", "url": "article/高中数学笔记/1. 分析/(2) 估值 & 放缩.html"}, {"title": "(3)° 求极限", "url": "article/高中数学笔记/1. 分析/(3)° 求极限.html"}, {"title": "(4) ε-N 极限求法", "url": "article/高中数学笔记/1. 分析/(4) ε-N 极限求法.html"}, {"title": "(5) 线性放缩", "url": "article/高中数学笔记/1. 分析/(5) 线性放缩.html"}, {"title": "(6) 介值定理 & 中值定理", "url": "article/高中数学笔记/1. 分析/(6) 介值定理 & 中值定理.html"}]}, {"name": "2.1. 代数 - 不等式", "groups": [], "items": [{"title": "(1) 基本不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(1) 基本不等式.html"}, {"title": "(2)° 均值不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(2)° 均值不等式.html"}, {"title": "(3)° 柯西不等式 (C-S不等式)", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(3)° 柯西不等式 (C-S不等式).html"}, {"title": "(4)° 琴生 (Jensen) 不等式 & 切线不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(4)° 琴生 (Jensen) 不等式 & 切线不等式.html"}, {"title": "(5)° 三元不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(5)° 三元不等式.html"}, {"title": "(6)° 不等式", "url": "article/高中数学笔记/2.1. 代数 - 不等式/(6)° 不等式.html"}]}, {"name": "2.2. 代数 - 数列", "groups": [], "items": [{"title": "(1) 数列", "url": "article/高中数学笔记/2.2. 代数 - 数列/(1) 数列.html"}, {"title": "(2)° 斐波那契数列", "url": "article/高中数学笔记/2.2. 代数 - 数列/(2)° 斐波那契数列.html"}, {"title": "(3) Gosper 算法", "url": "article/高中数学笔记/2.2. 代数 - 数列/(3) Gosper 算法.html"}]}, {"name": "3. 其他", "groups": [], "items": [{"title": "(1)° 集合论", "url": "article/高中数学笔记/3. 其他/(1)° 集合论.html"}, {"title": "(2)° 更多的三角函数 & 双曲三角函数 & 反三角函数 & 双曲三角函数", "url": "article/高中数学笔记/3. 其他/(2)° 更多的三角函数 & 双曲三角函数 & 反三角函数 & 双曲三角函数.html"}, {"title": "(3) 多项式定理", "url": "article/高中数学笔记/3. 其他/(3) 多项式定理.html"}]}], "items": [], "images": ["article/高中数学笔记/图片/三角形三边换元几何意义.png", "article/高中数学笔记/图片/极限的定义.jpg"]}, "currentPath": "article/高中数学笔记/2.1. 代数 - 不等式/(3)° 柯西不等式 (C-S不等式).md"};</script>
+</head>
+<body class="page-article" data-page="article" data-md="article/高中数学笔记/2.1. 代数 - 不等式/(3)° 柯西不等式 (C-S不等式).md">
+	<header class="nav">
+		<a class="brand" href="../../../index.html">铟子vinds</a>
+		<button class="menu-btn" id="menu-btn" type="button" aria-label="目录">☰</button>
+		<span class="spacer"></span>
+		<a class="navlink" href="../../../index.html">主页</a>
+		<button class="theme-btn" id="theme-btn" type="button" aria-label="切换夜间模式">☾</button>
+	</header>
+	<div class="layout">
+		<aside class="side" id="sidebar">
+<h2><a id="sidebar-subject" href="../../../article/%E9%AB%98%E4%B8%AD%E6%95%B0%E5%AD%A6%E7%AC%94%E8%AE%B0/index.html">高中数学笔记</a></h2>
+		<p class="side-home"><a href="https://y.vinds.top">主页</a></p>
+		<input type="search" id="sidebar-search" placeholder="搜索文章…" aria-label="搜索文章">
+		<div id="sidebar-tree"></div>
+	</aside>
+		<main class="main">
+<article class="doc" id="content">
+			<p class="status">正在加载文章…</p>
+		</article>
+		</main>
+	</div>
+	<footer class="foot">
+		<p><a href="https://github.com/vinds476283/article" target="_blank">GitHub</a> | Copyright © 2026-present | <a href="https://y.vinds.top" target="_blank">铟子vinds</a></p>
+	</footer>
+</body>
+</html>

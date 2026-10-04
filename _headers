@@ -1,0 +1,16 @@
+# Cloudflare Pages / Netlify 等静态托管平台的响应头配置
+#
+# 目的: 让 .md 文件以纯文本形式返回, 这样网页里的 fetch() 才能读到文章原文,
+# 而不会因为 text/markdown 被浏览器当成下载文件。
+
+/*.md
+  Content-Type: text/plain; charset=utf-8
+
+/article/*.md
+  Content-Type: text/plain; charset=utf-8
+
+/*.html
+  X-Content-Type-Options: nosniff
+
+/site-data.js
+  Cache-Control: public, max-age=600
