@@ -567,18 +567,32 @@ Markdown.prototype.render = function (src) {
 		return ln;
 	};
 
-	/* 段落里每行分别处理行内公式, 这样落单的 $ 不会跨行去配 */
+	/* 段落内: 每行分别处理行内公式(落单的 $ 不会跨行去配),
+	   并且按 Obsidian 的习惯把"单个换行"当成换行(而不是像 CommonMark 那样当空格)。
+	   - 连续两行都是普通文字时插 <br>
+	   - 以 < 开头的是 HTML 块, 用作者自己写的 <br />
+	   - 独占一行的链接(如名词索引里的 [[...]] 与 "见[[...]].")各自成段, 不并在一起 */
 	function renderPara(text) {
 		var self = this;
-		return text.split('\n').map(function (ln) {
-			if (window.__MPARA) console.error('LINE: ' + JSON.stringify(ln.slice(-70)));
-			return self.inline(fixLine(ln));
-		}).join('\n');
+		var parts = text.split('\n');
+		var out2 = '';
+		for (var p = 0; p < parts.length; p++) {
+			var ln = parts[p];
+			if (p > 0) {
+				var prev = parts[p - 1];
+				var soloLink = /^\s*(\[\[|!\[\[|见|详见)/;
+				var join = prev.trim() && ln.trim()
+					&& prev.charAt(0) !== '<' && ln.charAt(0) !== '<'
+					&& !soloLink.test(ln) && !soloLink.test(prev);
+				out2 += join ? '<br>' : '\n';
+			}
+			out2 += self.inline(fixLine(ln));
+		}
+		return out2;
 	}
 
 	var flush = function () {
 		if (!para.length) return;
-		if (window.__MPARA) console.error('PARA: ' + JSON.stringify(para.join('\n').slice(0, 200)));
 		out += '<p>' + renderPara.call(this, para.join('\n')) + '</p>';
 		para = [];
 	}.bind(this);

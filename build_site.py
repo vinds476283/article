@@ -27,6 +27,7 @@
 
 import os
 import json
+import re
 import sys
 from urllib.parse import quote
 
@@ -186,6 +187,31 @@ def walk_dir(path):
     return files, dirs
 
 
+# 文件名里的日期, 例如 "梦 (2026.9.25)" / "某篇（2025-12-31）"
+DATE_IN_NAME = re.compile(r"[（(]\s*(\d{4})\s*[.\-/年]\s*(\d{1,2})\s*[.\-/月]\s*(\d{1,2})\s*日?\s*[）)]")
+
+
+def date_key(title):
+    """从标题里取出日期, 返回可比较的元组; 没有日期返回 None"""
+    m = DATE_IN_NAME.search(title)
+    if not m:
+        return None
+    return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+
+def sort_items(items):
+    """同一个文件夹里的文章: 带日期的按日期从新到旧排在最前, 其余保持原顺序"""
+    dated, undated = [], []
+    for it in items:
+        k = date_key(it["title"])
+        if k:
+            dated.append((k, it))
+        else:
+            undated.append(it)
+    dated.sort(key=lambda pair: pair[0], reverse=True)   # 新的在前
+    return [it for _k, it in dated] + undated
+
+
 def build_folder(abs_dir, rel_dir, url_base):
     """把某个专题下的一个文件夹转成导航树节点
 
@@ -200,6 +226,7 @@ def build_folder(abs_dir, rel_dir, url_base):
             "title": f[:-3],
             "url": url_base + rel[:-3] + ".html",
         })
+    node["items"] = sort_items(node["items"])
     for d in dirs:
         child = build_folder(os.path.join(abs_dir, d), rel_dir + d + "/", url_base)
         if child["items"] or child["groups"]:
