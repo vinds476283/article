@@ -134,14 +134,38 @@ function indexArticles() {
 
 /* 图片地址: 先按站内索引找, 找不到就按文章所在目录算 */
 function imgSrc(articleDir, src) {
-	if (imageByName[src]) return root + encPath(imageByName[src]);
-	var base = src.split('/').pop();
-	if (imageByName[base]) return root + encPath(imageByName[base]);
+	var url = lookupImage(src);
+	if (url) return root + encPath(url);
 	if (articleDir) {
+		var base = src.split('/').pop();
 		var guess = joinPath(articleDir, '图片/' + base);
 		if (imageByName[guess]) return root + encPath(imageByName[guess]);
 	}
 	return root + encPath(joinPath(articleDir, src));
+}
+
+/* 在图片索引里找一个名字(顺带处理 URL 编码与去括号的写法) */
+function lookupImage(src) {
+	var cands = [src];
+	var base = String(src).split('/').pop();
+	cands.push(base);
+	try {
+		var dec = decodeURIComponent(String(src).replace(/\+/g, '%20'));
+		if (dec !== src) {
+			cands.push(dec);
+			cands.push(dec.split('/').pop());
+		}
+	} catch (e) { /* 不是合法的编码 */ }
+	var keys = Object.keys(imageByName);
+	for (var c = 0; c < cands.length; c++) {
+		if (imageByName[cands[c]]) return imageByName[cands[c]];
+		/* 去掉括号与空格再模糊比一次 */
+		var loose = cands[c].replace(/[（）()\s]/g, '');
+		for (var k = 0; k < keys.length; k++) {
+			if (keys[k].replace(/[（）()\s]/g, '') === loose) return imageByName[keys[k]];
+		}
+	}
+	return null;
 }
 
 /* --------------------------------------------------------------- 导航树 */
@@ -321,6 +345,16 @@ Markdown.prototype.wikiHref = function (target) {
 
 	var url = articleBySel[this.subject + '|' + subDir(this.dir) + '|' + page]
 		|| articleByTitle[page];
+	/* 写成 "名字%20(2026.7.4)" 或带 URL 编码的写法时, 还原成真实标题再找一次 */
+	if (!url && (page.indexOf('%') >= 0 || page.indexOf('+') >= 0)) {
+		var plain;
+		try { plain = decodeURIComponent(page.replace(/\+/g, '%20')).trim(); }
+		catch (e) { plain = ''; }
+		if (plain && plain !== page) {
+			url = articleBySel[this.subject + '|' + subDir(this.dir) + '|' + plain]
+				|| articleByTitle[plain];
+		}
+	}
 
 	if (!url && page === this.subject) {
 		var SITE = site();
@@ -421,25 +455,25 @@ Markdown.prototype.inlineLine = function (text) {
 
 		/* 图片(![说明](地址)) */
 		if (c === '!' && s.charAt(i + 1) === '[') {
-			var m1 = /^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/.exec(s.slice(i));
-			if (m1) {
-				out += '<img src="' + esc(imgSrc(this.dir, m1[2])) + '" alt="' + esc(m1[1]) + '">';
-				i += m1[0].length;
+			var im = parseLinkAt(s, i, true);
+			if (im) {
+				out += '<img src="' + esc(imgSrc(this.dir, im.href)) + '" alt="' + esc(im.label) + '">';
+				i += im.length;
 				continue;
 			}
 		}
 
 		/* 普通链接 */
 		if (c === '[') {
-			var m3 = /^\[([^\]]*)\]\(([^)\s]*)(?:\s+"([^"]*)")?\)/.exec(s.slice(i));
-			if (m3) {
-				var href = m3[2];
+			var lk = parseLinkAt(s, i, false);
+			if (lk) {
+				var href = lk.href;
 				var external = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) || href.charAt(0) === '#' || href.charAt(0) === '/';
 				var url = external ? href : root + encPath(joinPath(this.dir, href));
 				out += '<a href="' + esc(url) + '"'
 					+ (/^https?:/i.test(href) ? ' target="_blank" rel="noopener"' : '')
-					+ '>' + self.inline(m3[1]) + '</a>';
-				i += m3[0].length;
+					+ '>' + self.inline(lk.label) + '</a>';
+				i += lk.length;
 				continue;
 			}
 		}
@@ -1057,6 +1091,77 @@ function fixUnaryPow(s) {
 		i++;
 	}
 	return out;
+}
+
+/* 从 text[start] 开始解析 [说明](地址 "标题") 或 ![说明](地址),
+   返回 {label, href, length} 或 null。
+
+   地址用 (...) 包裹, 按标准做法要求里面的括号成对出现; 但笔记里常写
+   ".../%20(2026.7.4)" 这种不成对的写法(收尾那个 ) 直接被当成地址的一部分),
+   这里做个宽容处理: 先按成对扫描, 若地址里还有没配平的 ( 就把它补成成对的。 */
+function parseLinkAt(text, start, isImage) {
+	var i = start;
+	if (isImage) {
+		if (text.charAt(i) !== '!' || text.charAt(i + 1) !== '[') return null;
+		i++;
+	}
+	if (text.charAt(i) !== '[') return null;
+	i++;
+
+	/* 说明部分: 找不转义的 ] */
+	var label = '';
+	while (i < text.length && text.charAt(i) !== ']') {
+		if (text.charAt(i) === '\\' && i + 1 < text.length) { label += text.charAt(i + 1); i += 2; continue; }
+		label += text.charAt(i);
+		i++;
+	}
+	if (text.charAt(i) !== ']' || text.charAt(i + 1) !== '(') return null;
+	i += 2;
+
+	/* 地址部分: 找收尾的 )。
+	   写成 ".../%20(2026.7.4)" 时, 第一个 ) 会被当成收尾, 但后面紧跟着又有一个 ) —
+	   这说明真正的收尾在更后面, 于是继续往下找。 */
+	var depth = 0;
+	var j = i;
+	while (j < text.length) {
+		var ch = text.charAt(j);
+		if (ch === '\\') { j += 2; continue; }
+		if (ch === '(') { depth++; j++; continue; }
+		if (ch === ')') {
+			if (depth === 0) {
+				if (text.charAt(j + 1) === ')') { j++; continue; }
+				break;
+			}
+			depth--;
+			j++;
+			continue;
+		}
+		j++;
+	}
+	if (j >= text.length || text.charAt(j) !== ')') return null;
+
+	var href = text.slice(i, j).replace(/^\s+|\s+$/g, '');
+	/* 标准写法 <地址> : 把尖括号去掉 */
+	if (href.charAt(0) === '<' && href.charAt(href.length - 1) === '>') {
+		href = href.slice(1, -1).trim();
+	}
+
+	/* 写成 ".../%20(2026.7.4)" 这种没配平括号的地址时, 把漏掉的收尾 ) 补回去 */
+	var openCount = 0;
+	for (var k = 0; k < href.length; k++) {
+		if (href.charAt(k) === '\\') { k++; continue; }
+		if (href.charAt(k) === '(') openCount++;
+		else if (href.charAt(k) === ')') openCount--;
+	}
+	if (openCount > 0) href += ')'.repeat(openCount);
+
+	var length = j + 1 - start;
+
+	/* 地址后面跟的 "标题" 归链接, 不算正文 */
+	var tailRe = /^\s*"[^"]*"/.exec(text.slice(j + 1));
+	if (tailRe) length += tailRe[0].length;
+
+	return { label: label, href: href, length: length };
 }
 
 /* 把 LaTeX 转成可以求值的 JS 表达式 */
