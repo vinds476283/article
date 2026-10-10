@@ -171,13 +171,24 @@ window.SITE = {
        {
         "title": "(3) 多项式定理",
         "url": "article/高中数学笔记/3. 其他/(3) 多项式定理.html"
+       },
+       {
+        "title": "(4) 四面体 & 正八面体",
+        "url": "article/高中数学笔记/3. 其他/(4) 四面体 & 正八面体.html"
        }
       ]
      }
     ],
     "items": [],
     "images": [
+     "article/高中数学笔记/图片/MAX相晶体晶胞示意图.png",
+     "article/高中数学笔记/图片/MAX相晶体晶胞示意图c轴投影图1.png",
+     "article/高中数学笔记/图片/MAX相晶体晶胞示意图c轴投影图2.png",
+     "article/高中数学笔记/图片/MAX相晶体晶胞示意图答案示意图.png",
      "article/高中数学笔记/图片/三角形三边换元几何意义.png",
+     "article/高中数学笔记/图片/从长方体切出四面体图示.svg",
+     "article/高中数学笔记/图片/倒三角形成正八面体.svg",
+     "article/高中数学笔记/图片/封面图.png",
      "article/高中数学笔记/图片/极限的定义.jpg"
     ]
    }
@@ -322,6 +333,11 @@ window.SITE = {
   {
    "title": "(3) 多项式定理",
    "url": "article/高中数学笔记/3. 其他/(3) 多项式定理.html",
+   "subject": "高中数学笔记"
+  },
+  {
+   "title": "(4) 四面体 & 正八面体",
+   "url": "article/高中数学笔记/3. 其他/(4) 四面体 & 正八面体.html",
    "subject": "高中数学笔记"
   }
  ]
