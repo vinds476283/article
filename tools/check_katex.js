@@ -31,6 +31,28 @@ function download(url, file) {
 	const katex = require(katexFile);
 	console.log('KaTeX ' + katex.version);
 
+	/* mhchem 扩展提供 \ce{} / \pu{}, 页面里也是加载它的, 这里要保持一致。
+	   它是 UMD 包, 在 Node 里会去 require("katex"), 所以给它一个假的 require。 */
+	const mhchemFile = path.join(CACHE, 'mhchem.min.js');
+	if (!fs.existsSync(mhchemFile) || fs.statSync(mhchemFile).size < 1000) {
+		console.log('下载 mhchem…');
+		await download('https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/mhchem.min.js', mhchemFile);
+	}
+	global.window = global.window || {};
+	global.window.katex = katex;
+	const fakeRequire = function (name) {
+		if (name === 'katex') return katex;
+		return require(name);
+	};
+	new Function('window', 'katex', 'require', 'module', 'exports',
+		fs.readFileSync(mhchemFile, 'utf8'))(global.window, katex, fakeRequire, { exports: {} }, {});
+	try {
+		katex.__parse('\\ce{Ti}', { throwOnError: true });
+		console.log('mhchem 扩展已加载');
+	} catch (e) {
+		console.log('!! mhchem 扩展加载失败: ' + e.message);
+	}
+
 	/* 用渲染器自己的逻辑取出公式, 再逐个用 KaTeX 检查 */
 	const src = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8')
 		.replace('(function () {', '')

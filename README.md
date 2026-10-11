@@ -119,12 +119,16 @@
 ### 关于公式
 
 公式用 [KaTeX](https://katex.org/) 排版, 通过 CDN 加载
-(`build_site.py` 顶部的 `KATEX_CSS` / `KATEX_JS` 可改)。它和页面其它脚本一样是
+(`build_site.py` 顶部的 `KATEX_CSS` / `KATEX_JS` / `KATEX_MHCHEM` 可改)。它和页面其它脚本一样是
 `defer` 加载的, 打开页面时会先把公式当成 LaTeX 源码显示, 加载完成后自动替换成排版好的公式;
 **万一 CDN 打不开, 页面其它内容完全不受影响**, 只是公式保持源码样式。
 
+**化学公式**: 页面额外加载了 KaTeX 的 [mhchem](https://mhchem.github.io/MathJax-mhchem/) 扩展,
+所以 `$\ce{Ti6Al2C4}$`、`$\ce{2H2 + O2 -> 2H2O}$`、`$\pu{1.5 mol}$` 这类写法都能正常排版
+(不加载这个扩展的话, `\ce` 会被当成未知命令而渲染失败)。扩展脚本必须排在 `katex.min.js` **之后**。
+
 想完全离线 / 不依赖 CDN, 把 KaTeX 的 `dist` 目录放进站点(例如 `assets/katex/`),
-再把 `KATEX_CSS` / `KATEX_JS` 改成相对路径的列表即可 —— 它们是直接拼在页面
+再把 `KATEX_CSS` / `KATEX_JS` / `KATEX_MHCHEM` 改成相对路径即可 —— 它们是直接拼在页面
 `data-root` 前缀后面的, 所以填 `assets/katex/katex.min.css` 这样的相对路径就行。
 
 ### 关于 desmos-graph

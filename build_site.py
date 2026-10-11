@@ -44,6 +44,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # 如果想完全离线, 把 katex 的 dist 目录放进站点并改成相对路径即可。
 KATEX_CSS = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
 KATEX_JS = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"
+# mhchem 扩展: 提供 \ce{} / \pu{} 化学公式(必须排在 katex 本体之后)
+KATEX_MHCHEM = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/mhchem.min.js"
 
 # 与 JavaScript 的 encodeURI 保持一致, 避免生成的路径与运行时拼接的路径不同
 URI_SAFE = "!'()*-._~+/&$=:@"
@@ -130,7 +132,8 @@ def page_shell(*, root, title, desc, body_class, page, extra_data,
         'document.documentElement.setAttribute("data-theme",t);}}catch(e){{}}}})();</script>'
         '\t<script src="{site_data}" defer></script>\n'
         '\t<script src="{app}"></script>'
-        '\t<script defer src="{katex_js}" crossorigin="anonymous"></script>{head_extra}\n'
+        '\t<script defer src="{katex_js}" crossorigin="anonymous"></script>\n'
+        '\t<script defer src="{katex_mhchem}" crossorigin="anonymous"></script>{head_extra}\n'
         '</head>\n'
         '<body class="{body_class}" data-page="{page}"{data_attr}>\n'
         '\t{nav}\n'
@@ -147,6 +150,7 @@ def page_shell(*, root, title, desc, body_class, page, extra_data,
         css=root + "style.css",
         katex_css=KATEX_CSS,
         katex_js=KATEX_JS,
+        katex_mhchem=KATEX_MHCHEM,
         site_data=root + "site-data.js",
         app=root + "app.js",
         head_extra=head_extra,

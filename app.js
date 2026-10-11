@@ -284,14 +284,24 @@ function Markdown(opts) {
 /* 标题原文 -> 锚点 id, 用于把链接里的 #片段 也按同样规则归一化 */
 var slugRegistry = {};
 
-/* 把标题里的 $公式$ 转成便于阅读的文本, 再生成锚点 id。
-   例如 "$\varepsilon-N$ 极限求法" -> "ε-N 极限求法" */function mathToText(tex) {
-	var s = texToExpr(tex);
-	try {
-		/* eslint-disable no-new-func */
-		var v = new Function(FUNC_SCOPE + 'return (' + s + ');')();
-		if (typeof v === 'number' && isFinite(v)) return String(Math.round(v * 1000) / 1000);
-	} catch (e) { /* 不是常数 */ }
+/* 把 \ce{...} / \pu{...} / \ce Ti 这类化学写法转成可读文本 */
+function chemToText(s) {
+	var out = String(s);
+	var guard = 0;
+	while (guard++ < 50) {
+		var m = /\\(?:ce|pu)\s*\{([^{}]*)\}/.exec(out);
+		if (!m) break;
+		out = out.slice(0, m.index) + m[1] + out.slice(m.index + m[0].length);
+	}
+	/* \ce Ti 这种不带花括号的写法 */
+	out = out.replace(/\\(?:ce|pu)\s*([A-Z][A-Za-z0-9]*)/g, '$1');
+	return out;
+}
+
+/* 把数学/化学公式转成适合做锚点或标签的纯文本 */
+function mathToText(tex) {
+	var v = numText(texToExpr(chemToText(tex)));
+	if (v !== null) return v;
 	return prettyText(tex);
 }
 
@@ -1279,7 +1289,7 @@ function texToText(tex) {
 
 function prettyText(raw) {
 	var s = String(raw).replace(/^\\left|\\right$/g, '');
-	var t = texToExpr(s);
+	var t = texToExpr(chemToText(s));
 	/* 括号里的点标签: 分别把两个坐标算成数字, 更直观 */
 	var m = /^\(([^,]+),([^,]+)\)$/.exec(t);
 	if (m) {
@@ -1287,7 +1297,7 @@ function prettyText(raw) {
 		var b = numText(m[2]);
 		if (a !== null && b !== null) return '(' + a + ', ' + b + ')';
 	}
-	return s
+	return chemToText(s)
 		.replace(/\\(dfrac|frac|tfrac|sqrt|left|right|mathrm|operatorname|,)/g, ' ')
 		.replace(/[\\{}]/g, '')
 		.replace(/\s+/g, ' ')
